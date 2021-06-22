@@ -52,7 +52,7 @@ td {
 		<tr align="center" >
 			<td colspan="2" class="title">
 				<a href="?yy=${yy-1 }&mm=${mm}"> <img src="./resources/images/first.png" alt="이전년도"> </a>
-				<a href="?yy=${yy }&mm=${mm-1}"> <img src="./resources/images/prev.png" alt="이전월"> </a>
+				<a href="?yy=${yy }&mm=${mm-1}"> <img src="./resources/images/pre.png" alt="이전월"> </a>
 			</td>
 			<td colspan="3" class="title">
 				${yy }년 ${mm }월
