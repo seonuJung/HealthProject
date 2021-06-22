@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.health.mvc.dao.NoticeDAO">
+<!-- 전체 개수 얻기 -->
+<select id="noticeCount" resultType="int">
+	select count(*) from notice
+</select>
+<!-- 1개얻기 -->
+<select id="noticeByIdx" parameterType="int" resultType="NoticeVO">
+	select * from notice where notice_idx=#{notice_idx}
+</select>
+<!-- 1페이지 얻기 -->
+<select id="noticeList" parameterType="hashmap" resultType="NoticeVO">
+		select 
+			R.*
+		from
+			(select 
+				rownum rnum, Q.*
+			from 
+				(select * from notice order by notice_idx desc) Q
+			where
+				<![CDATA[
+				rownum <= #{endNo}
+				]]>
+			) R
+		where
+			<![CDATA[
+				rnum >= #{startNo}
+			]]>
+</select>
+<!-- 관리자 글 저장하기 -->
+<insert id="noticeInsert" parameterType="NoticeVO">
+		insert into notice
+			(notice_idx, sys_name, sys_title, sys_content, sys_date)
+		values
+			(notice_idx_seq.nextval, #{sys_name}, #{sys_title}, #{sys_content}, SYSDATE)
+</insert>
+<!-- 관리자 글 수정하기 -->
+<update id="noticeUpdate" parameterType="NoticeVO">
+		update 
+			notice
+		set
+			sys_name = #{sys_name}, sys_title = #{sys_title}, sys_content = #{sys_content}, sys_date = SYSDATE
+		where
+			notice_idx=#{notice_idx}
+</update>
+<!-- 관리자 글 삭제하기 -->
+<delete id="noticeDelete" parameterType="int">
+	delete from notice where notice_idx=#{notice_idx}
+</delete>
+</mapper>

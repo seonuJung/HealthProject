@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+	
+	<!-- Root Context: defines shared resources visible to all other web components -->
+	<!-- 메세지 컨버터 등록 -->
+	<bean id="xmlMessageConverter"
+		class="org.springframework.http.converter.xml.MarshallingHttpMessageConverter" />
+	<bean id="jsonMessageConverter"
+		class="org.springframework.http.converter.json.GsonHttpMessageConverter" />
+	<!-- 메세지 컨버터 맵핑 -->
+	<bean
+		class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+		<property name="messageConverters">
+			<list>
+				<ref bean="xmlMessageConverter" />
+				<ref bean="jsonMessageConverter" />
+			</list>
+		</property>
+	</bean>		
+	
+	  <!-- *********************************************************************** -->
+   <!-- DB연결 및 마이바티스 객체 등록 -->
+   
+   <!-- 사용할 프로퍼티 파일 지정 -->
+   <context:property-placeholder  location="classpath:db.properties" /> 
+   
+   <!-- 트랜젝션을 어노테이션으로 하겠다!!! -->
+   <tx:annotation-driven   transaction-manager="transactionManager" />      
+   
+   <!-- DB연결 -->
+   <bean id="dataSource"
+      class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+      <property name="driverClassName" value="${o.driver}" />
+      <property name="url" value="${o.url}" />
+      <property name="username" value="${o.username}" />
+      <property name="password" value="${o.password}" />
+   </bean>
+   
+   <!-- Mybatis -->
+   <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+      <property name="dataSource" ref="dataSource"/>
+      <property name="typeAliasesPackage" value="kr.health.mvc.vo"/>
+      <property name="mapperLocations" value="classpath:/kr/health/mvc/dao/*.xml"/>
+   </bean>
+   
+   <!--    이것을 등록하면 DaoImpl을 만들지 않고 인터페이스만 만들어도 된다.   -->
+   <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+      <property name="basePackage" value="kr.health.mvc.dao"/>
+      <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+   </bean>
+   
+
+
+   <!-- 트랜젝션 관리자 추가 -->
+   <bean id="transactionManager"
+      class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+      <property name="dataSource" ref="dataSource" />
+   </bean>
+   <!-- *********************************************************************** -->		
+</beans>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.health.mvc.dao.JoinDAO">
+
+<!--  1개 얻기 -->
+<select id="joinByIdx" parameterType="int" resultType="JoinVO">
+	select * from member_join where member_idx=#{member_idx}
+</select>
+
+<!-- 로그인 -->
+<select id="joinByMemberId" parameterType="hashmap" resultType="JoinVO">
+	select * from member_join where member_id=#{member_id}
+</select>
+
+<!-- 예약회원 전체보기 -->
+<select id="joinList" resultType="JoinVO">
+	select * from member_join order by member_idx
+</select>
+
+<!-- 회원 저장 -->
+<insert id="joinInsert" parameterType="JoinVO">
+		insert into member_join
+			(member_idx, member_id, member_password, member_name, member_birth, member_phone, weight, height, grade)
+		values
+			(member_join_idx_seq.nextval, #{member_id}, #{member_password}, #{member_name}, #{member_birth}, #{member_phone}, #{weight}, #{height}, #{grade})
+</insert>
+
+<!--회원 수정 -->
+<update id="joinUpdate" parameterType="JoinVO">
+		update 
+			member_join
+		set
+			member_id = #{member_id}, member_password = #{member_password}, member_name = #{member_name},
+			member_birth = #{member_birth}, member_phone = #{member_phone}, weight = #{weight}, height = #{height}, grade = #{grade}
+		where
+			member_idx=#{member_idx}
+</update>
+
+<!--회원 삭제 -->
+<delete id="joinDelete" parameterType="int">
+	delete from member_join where member_idx = #{member_idx}
+</delete>
+
+<delete id="trainerDelete" parameterType="hashmap">
+	delete from trainer_schedule where trainer_id = #{member_id}
+</delete>
+<delete id="memberDelete" parameterType="hashmap">
+	delete from trainer_schedule where member_phone = #{member_phone}
+</delete>
+</mapper>

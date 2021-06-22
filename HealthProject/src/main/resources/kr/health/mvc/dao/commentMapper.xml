@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.health.mvc.dao.CommentDAO">
+<!-- 댓글 전제조회 -->
+<select id="CommentList" resultType="CommentVO">
+	select * from comments order by cm_idx 
+</select>
+
+<select id="selectByRef" parameterType="int" resultType="CommentVO">
+	select * from comments where ref=#{ref} order by cm_idx desc
+</select>
+
+<select id="countByRef" parameterType="int" resultType="int">
+	select count(*) from comments where ref=#{ref}
+</select>
+
+<!-- 작성자 글 댓글 저장하기 -->
+<insert id="CommentInsert" parameterType="CommentVO">
+	insert into comments
+		 (cm_idx, ref, sys_name, sys_id, sys_content, sys_date)
+	values
+		 (comments_idx_seq.nextval, #{ref}, #{sys_name}, #{sys_id}, #{sys_content}, SYSDATE)
+</insert>
+
+<!-- 작성자 글 댓글 수정하기 -->
+<update id="CommentUpdate" parameterType="CommentVO">
+	update 
+		comments
+	set
+		sys_name = #{sys_name}, sys_id = #{sys_id}, sys_content = #{sys_content}, sys_date = SYSDATE
+	where
+		cm_idx=#{cm_idx}
+</update>
+
+<!-- 작성자 글 댓글 삭제하기 -->
+<delete id="CommentDelete" parameterType="int">
+	delete from comments where cm_idx=#{cm_idx}
+</delete>
+
+<!-- 원본글 삭제시 해당 댓글 모두삭제 -->
+<delete id="refDelete" parameterType="int">
+	delete from comments where ref=#{ref}
+</delete>
+</mapper>

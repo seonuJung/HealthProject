@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.health.mvc.dao.SuggestionsDAO">
+<!-- 전체 개수 얻기 -->
+<select id="suggestionsCount" resultType="int">
+	select count(*) from suggestions
+</select>
+<!-- 1개얻기 -->
+<select id="suggestionsByIdx" parameterType="int" resultType="SuggestionsVO">
+	select * from suggestions where sg_idx=#{sg_idx}
+</select>
+<!-- 1페이지 얻기 -->
+<select id="suggestionsList" parameterType="hashmap" resultType="SuggestionsVO">
+		select 
+			R.*
+		from
+			(select 
+				rownum rnum, Q.*
+			from 
+				(select * from suggestions order by sg_idx desc) Q
+			where
+				<![CDATA[
+				rownum <= #{endNo}
+				]]>
+			) R
+		where
+			<![CDATA[
+				rnum >= #{startNo}
+			]]>
+</select>
+<!-- 작성자 글 저장하기 -->
+<insert id="suggestionsInsert" parameterType="SuggestionsVO">
+		insert into suggestions
+			(sg_idx, member_name, member_id, member_title, member_content, member_date)
+		values
+			(suggestions_idx_seq.nextval, #{member_name}, #{member_id}, #{member_title}, #{member_content}, SYSDATE)
+</insert>
+<!-- 작성자 글 수정하기 -->
+<update id="suggestionsUpdate" parameterType="SuggestionsVO">
+		update 
+			suggestions
+		set
+			member_name = #{member_name}, member_id = #{member_id}, member_title = #{member_title}, member_content = #{member_content}, member_date = SYSDATE
+		where
+			sg_idx=#{sg_idx}
+</update>
+<!-- 작성자 글 삭제하기 -->
+<delete id="suggestionsDelete" parameterType="int">
+	delete from suggestions where sg_idx=#{sg_idx}
+</delete>
+</mapper>

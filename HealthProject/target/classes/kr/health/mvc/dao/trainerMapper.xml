@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.health.mvc.dao.TrainerDAO">
+<!-- 예약회원 전체보기 -->
+<select id="ptList" resultType="TrainerVO">
+	select * from trainer_schedule order by pt_time
+</select>
+
+<!-- 예약회원 저장하기 -->
+<insert id="ptInsert" parameterType="TrainerVO">
+	insert into trainer_schedule
+		 (pt_idx, trainer_id, pt_time, member_name, pt_age, pt_exercise, pt_remain, member_phone,pt_date)
+	values
+		 (trainer_schedule_idx_seq.nextval, #{trainer_id}, #{pt_time}, #{member_name}, #{pt_age}, #{pt_exercise}, #{pt_remain}, #{member_phone}, #{pt_date})
+</insert>
+
+<!-- 예약회원 수정하기 -->
+<update id="ptUpdate" parameterType="TrainerVO">
+	update 
+		trainer_schedule
+	set
+		trainer_id = #{trainer_id}, pt_time = #{pt_time}, member_name = #{member_name}, pt_age = #{pt_age},
+		pt_exercise = #{pt_exercise}, pt_remain = #{pt_remain}, member_phone = #{member_phone}, pt_date = #{pt_date}
+	where
+		pt_idx=#{pt_idx}
+</update>
+
+<!-- 예약회원 삭제하기 -->
+<delete id="ptDelete" parameterType="int">
+	delete from trainer_schedule where pt_idx=#{pt_idx}
+</delete>
+
+</mapper>
